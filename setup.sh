@@ -245,6 +245,39 @@ action_diagnose() {
     press_enter
 }
 
+# ── Opción 5: Desinstalación y Borrado Total ──────────────────────────────────
+action_uninstall() {
+    header
+    log_warn "ESTÁS A PUNTO DE ELIMINAR COMPLETAMENTE JCODE DE TU SISTEMA"
+    echo -ne " ${WHITE}¿Estás seguro de que deseas desinstalar y borrar todo? [s/N]: ${RESET}"
+    read -r confirm
+    
+    if [[ "$confirm" =~ ^[sS]$ ]]; then
+        log_info "Iniciando la desinstalación completa..."
+        
+        # 1. Detener el servidor
+        log_info "Deteniendo el servidor JCode Daemon..."
+        jcode server stop --force >/dev/null 2>&1 || true
+        local pid
+        pid=$(pgrep -f "jcode.*serve" || echo "")
+        if [ -n "$pid" ]; then
+            kill -9 "$pid" >/dev/null 2>&1 || true
+        fi
+        log_success "Servidores detenidos."
+        
+        # 2. Borrar ejecutables y directorios
+        log_info "Borrando binarios, tokens, caché y configuraciones locales..."
+        rm -f "$HOME/.local/bin/jcode"
+        rm -rf "$HOME/.jcode"
+        rm -rf "$HOME/.config/jcode"
+        
+        log_success "¡JCode y todo lo referente a la herramienta ha sido eliminado!"
+    else
+        log_info "Operación cancelada."
+    fi
+    press_enter
+}
+
 # ── Menú Principal ────────────────────────────────────────────────────────────
 main_menu() {
     while true; do
@@ -253,9 +286,10 @@ main_menu() {
         echo -e " ${CYAN}2)${RESET} Optimizar Pantalla y Animaciones (Evita parpadeos y letras invisibles)"
         echo -e " ${CYAN}3)${RESET} Administrar Servidor Daemon (Iniciar/Detener)"
         echo -e " ${CYAN}4)${RESET} Diagnóstico de Sistema y Autenticación"
-        echo -e " ${CYAN}5)${RESET} Salir"
+        echo -e " ${CYAN}5)${RESET} Desinstalar JCode y Borrar Todo"
+        echo -e " ${CYAN}6)${RESET} Salir"
         echo -e ""
-        echo -ne " ${WHITE}Elige una opción [1-5]: ${RESET}"
+        echo -ne " ${WHITE}Elige una opción [1-6]: ${RESET}"
         read -r opt
         
         case "$opt" in
@@ -263,14 +297,15 @@ main_menu() {
             2) action_configure_visuals ;;
             3) action_manage_server ;;
             4) action_diagnose ;;
-            5)
+            5) action_uninstall ;;
+            6)
                 header
                 echo -e "${GREEN}${BOLD}¡Gracias por usar jcodeTermux! Saludos al gran Ivam3 por el soporte de la comunidad.${RESET}"
                 echo -e "Saliendo...\n"
                 exit 0
                 ;;
             *)
-                log_warn "Opción inválida. Elige un número del 1 al 5."
+                log_warn "Opción inválida. Elige un número del 1 al 6."
                 sleep 1
                 ;;
         esac

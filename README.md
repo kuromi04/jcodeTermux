@@ -1,5 +1,9 @@
 # jcodeTermux 📱⚡
 
+<p align="center">
+  <img src="banner.jpg" alt="jcodeTermux Banner" width="100%">
+</p>
+
 [![Platform: Termux](https://img.shields.io/badge/Platform-Termux-green.svg?style=for-the-badge&logo=android)](https://termux.dev)
 [![Ecosystem: i-HakLab](https://img.shields.io/badge/Ecosystem-i--HakLab-blue.svg?style=for-the-badge)](https://github.com/ivam3)
 [![Glibc Wrapper: Optimized](https://img.shields.io/badge/Glibc%20Wrapper-Optimized-magenta.svg?style=for-the-badge)](docs/skills.md)
@@ -9,20 +13,32 @@ Optimización, instalación y entorno automatizado para ejecutar **JCode** (el a
 
 ---
 
+## 🌟 ¿Por qué recomendamos JCode? (Nuestra Recomendación)
+
+**JCode** destaca sobre otros arneses de IA tradicionales debido a su diseño de alto rendimiento centrado en terminales:
+*   **Velocidad y Fluidez Excepcional:** Escrito en **Rust**, inicia en milisegundos y consume una fracción de la memoria RAM que requerirían herramientas pesadas basadas en Node.js o Python.
+*   **Multitud de Modelos y Proveedores:** Soporta configuración inmediata y cambio en caliente (mediante `/model`) de casi cualquier proveedor líder de LLM en el mercado:
+    *   *Comerciales:* OpenAI (ChatGPT Pro), Claude (Anthropic Max), Google Gemini.
+    *   *Agregadores y Nube:* OpenRouter, Deepinfra, TogetherAI, Fireworks, Groq.
+    *   *Locales (Sin Conexión):* LM Studio, Ollama, y servidores compatibles con OpenAI.
+*   **Pensado para Power Users:** Su interfaz de terminal interactiva (TUI) te permite codificar en parejas, administrar archivos y ejecutar comandos sin perder el enfoque ni abandonar la consola.
+
+---
+
 ## 📖 ¿Por qué es necesario jcodeTermux?
 
 El binario oficial de **JCode** está compilado nativamente para arquitecturas GNU/Linux estándar enlazadas contra **glibc**. Al intentar ejecutarlo en Android/Termux, ocurren los siguientes problemas:
-1. **Incompatibilidad de libc:** Android utiliza **Bionic libc**, lo que causa fallos inmediatos al intentar cargar dependencias de sistema dinámicas (`libc.so.6`, `libssl.so.3`, etc.).
-2. **Shebangs Corruptos:** El instalador genera un script de inicio wrapper apuntando a `#!/usr/bin/env bash`, ruta absoluta que no existe en el sistema de archivos de usuario de Termux.
-3. **Inestabilidad Visual (TUI Glitch):** Los terminales emulados en Android colapsan ante actualizaciones continuas de alta frecuencia en la interfaz gráfica (como las animaciones de carga e idle a 25+ FPS), provocando que los textos del chat desaparezcan o se superpongan.
+1. **Incompatibilidad de libc:** Android utiliza **Bionic libc**, lo que causa fallos de enlazado dinámico.
+2. **Shebangs Corruptos:** El instalador genera wrappers apuntando a `#!/usr/bin/env bash`, ruta que no existe de forma nativa en Termux.
+3. **TUI Glitch (Inestabilidad Visual):** Los terminales emulados en móviles colapsan ante actualizaciones continuas de alta frecuencia (como las animaciones de carga e idle a 25+ FPS), ocultando el texto del chat.
 
-**jcodeTermux** soluciona esto de manera automatizada mediante un script interactivo en Bash que parcha las cabeceras ELF, corrige las variables de entorno de `glibc` y aplica una configuración visual balanceada.
+**jcodeTermux** soluciona esto aplicando las reglas de la base de conocimiento de **Termux-Oracle**.
 
 ---
 
 ## 🛠️ El Configurador Interactivo (`setup.sh`)
 
-Incluimos un script con interfaz de menú interactiva en el terminal que te permite administrar JCode sin ingresar comandos manuales complejos:
+El repositorio incluye un script con interfaz de menú interactivo en el terminal:
 
 ```text
 ======================================================================
@@ -41,16 +57,17 @@ Incluimos un script con interfaz de menú interactiva en el terminal que te perm
  2) Optimizar Pantalla y Animaciones (Evita parpadeos y letras invisibles)
  3) Administrar Servidor Daemon (Iniciar/Detener)
  4) Diagnóstico de Sistema y Autenticación
- 5) Salir
+ 5) Desinstalar JCode y Borrar Todo
+ 6) Salir
 
- Elige una opción [1-5]: 
+ Elige una opción [1-6]: 
 ```
 
 ---
 
 ## 🚀 Instalación Rápida
 
-Para clonar este repositorio e iniciar el asistente en tu dispositivo Android, ejecuta la siguiente secuencia de comandos en Termux:
+Ejecuta la siguiente secuencia de comandos en tu terminal de Termux:
 
 ```bash
 # Clonar el repositorio
@@ -68,31 +85,31 @@ chmod +x setup.sh
 
 ## ⚙️ Optimización Visual Aplicada
 
-El asistente de configuración modifica de forma segura tu archivo `~/.jcode/config.toml` con parámetros estudiados específicamente para Termux:
+El asistente modifica automáticamente tu archivo `~/.jcode/config.toml` con parámetros ajustados para Termux:
 
-*   **`idle_animation = false`**: Detiene las animaciones infinitas en segundo plano, estabilizando el chat para que el texto sea siempre visible.
-*   **`prompt_entry_animation = false`**: Evita la corrupción y el desfase del cursor de entrada mientras escribes tus prompts.
-*   **`disabled_animations = []`**: Conserva activa la presentación y animación inicial (splash screen) en el arranque del sistema.
-*   **`animation_fps = 10` y `redraw_fps = 12`**: Modera el tráfico de refresco del terminal, logrando un movimiento fluido y protegiendo el consumo de batería de tu smartphone.
-*   **`mouse_capture = false`**: Permite realizar scrolling y copiar texto de manera nativa usando los gestos táctiles de Termux sin interferir con el agente.
+*   **`idle_animation = false`**: Detiene las animaciones continuas en reposo, garantizando que el texto del chat permanezca visible.
+*   **`prompt_entry_animation = false`**: Evita la corrupción y el desfase del cursor al escribir prompts.
+*   **`disabled_animations = []`**: Mantiene activa la animación de presentación inicial (splash screen) en el arranque.
+*   **`animation_fps = 10` y `redraw_fps = 12`**: Modera el tráfico de redibujados, logrando fluidez gráfica y protegiendo la batería del móvil.
+*   **`mouse_capture = false`**: Permite realizar scroll y copia de texto nativa táctil de Android sin bloqueos.
 
 ---
 
-## 📚 Documentación Técnica & Skills
+## 📚 Documentación Técnica & Skills (Termux-Oracle)
 
-Si deseas profundizar en la ingeniería detrás de la adaptación de binarios y wrappers, te invitamos a consultar nuestra [Guía Experta de Adaptación](docs/skills.md), donde se detalla:
+Para profundizar en la ingeniería y políticas de adaptación de binarios y wrappers, consulta nuestra [Guía Experta de Adaptación](docs/skills.md) basada en **Termux-Oracle**, que detalla:
 *   Mapeo de intérpretes dinámicos de ELF con `patchelf`.
 *   Ajustes y resolución de variables críticas (`GLIBC_TUNABLES`, `LD_PRELOAD`).
-*   Solución a errores comunes en Termux.
+*   Troubleshooting y solución de errores en Termux.
 
 ---
 
 ## 💖 Créditos y Agradecimientos
 
-Este repositorio y sus parches no serían posibles sin el esfuerzo continuo y soporte técnico de la comunidad de seguridad y desarrollo en habla hispana:
+Este repositorio y sus parches no serían posibles sin el soporte técnico de la comunidad de desarrollo en Android:
 
-*   **[Ivam3](https://github.com/ivam3):** Creador y patrocinador de la suite **i-HakLab** y el repositorio de paquetes optimizados que proporcionan las librerías glibc base para Termux. Su incansable trabajo ha facilitado la ejecución de asistentes de IA nativos en Android.
-*   **Comunidad i-HakLab / AI-HakLab:** Por testear los límites de los modelos, scripts y TUI en plataformas móviles y reportar soluciones a fallas comunes.
+*   **[Ivam3](https://github.com/ivam3):** Creador de la suite **i-HakLab** y mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
+*   **Comunidad i-HakLab / AI-HakLab:** Por testear los límites de los scripts de IA en entornos móviles y reportar fallas comunes.
 
 ---
 
