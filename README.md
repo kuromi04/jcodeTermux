@@ -168,9 +168,9 @@ Para profundizar en la ingeniería y políticas de adaptación de binarios y wra
 
 Este repositorio y sus parches no serían posibles sin el soporte técnico y aportes de la comunidad de desarrollo en Android:
 
-*   **[kuromi04](https://github.com/kuromi04) (Autor):** Creador del repositorio y desarrollador de los scripts de adaptación, automatizaciones de configuración visual y el menú táctico de instalación/desinstalación para Termux.
-*   **[Ivam3](https://github.com/ivam3) (Sponsor):** Diseñador de la suite **i-HakLab** y mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
+*   **[Ivam3](https://github.com/ivam3) (Sponsor):** Diseñador de la suite **i-HakLab** y creador de Termux-Oracle, mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
 *   **Comunidad i-HakLab / AI-HakLab:** Por testear los límites de los scripts de IA en entornos móviles y reportar fallas comunes.
+*   **[kuromi04](https://github.com/kuromi04) (Autor):** Creador del repositorio y desarrollador de los scripts de adaptación, automatizaciones de configuración visual y el menú táctico de instalación/desinstalación para Termux.
 
 ---
 
