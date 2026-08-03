@@ -13,6 +13,17 @@ Optimización, instalación y entorno automatizado para ejecutar **JCode** (el a
 
 ---
 
+## ⚠️ Requisito Crítico: Descarga de Termux
+
+> [!IMPORTANT]
+> **¡NO USES la versión de Google Play Store!** La versión de Termux en Google Play está descontinuada y desactualizada, lo que causará fallos graves en los repositorios de paquetes e incompatibilidades con el entorno `glibc`.
+
+Para que `jcodeTermux` funcione correctamente, debes descargar Termux únicamente de sus fuentes oficiales activas:
+*   📥 **[Descargar Termux desde F-Droid](https://f-droid.org/packages/com.termux/)** (Recomendado)
+*   📥 **[Descargar Termux desde GitHub Releases](https://github.com/termux/termux-app/releases)**
+
+---
+
 ## 🌟 ¿Por qué recomendamos JCode? (Nuestra Recomendación)
 
 **JCode** destaca sobre otros arneses de IA tradicionales debido a su diseño de alto rendimiento centrado en terminales:
@@ -22,6 +33,55 @@ Optimización, instalación y entorno automatizado para ejecutar **JCode** (el a
     *   *Agregadores y Nube:* OpenRouter, Deepinfra, TogetherAI, Fireworks, Groq.
     *   *Locales (Sin Conexión):* LM Studio, Ollama, y servidores compatibles con OpenAI.
 *   **Pensado para Power Users:** Su interfaz de terminal interactiva (TUI) te permite codificar en parejas, administrar archivos y ejecutar comandos sin perder el enfoque ni abandonar la consola.
+
+---
+
+## 📊 Comparativa de Eficiencia (jcode.sh)
+
+A continuación se presenta un resumen de las métricas oficiales de rendimiento de JCode en comparación con otras herramientas CLI de agentes de IA y copitotos de código:
+
+### 1. Consumo de Memoria por Sesión Adicional (PSS)
+*Mide la cantidad de memoria RAM adicional requerida por cada sesión nueva.*
+
+| Herramienta | Consumo de RAM (Extra PSS) | Comparativa |
+| :--- | :--- | :--- |
+| **jcode (local embedding off)** | **~9.9 MB** | **Línea Base (Mínimo)** |
+| **jcode (completo)** | **~10.4 MB** | 1.1× más RAM |
+| Codex CLI | ~21.6 MB | 2.2× más RAM |
+| pi | ~76.5 MB | 7.7× más RAM |
+| Antigravity CLI | ~86.4 MB | 8.7× más RAM |
+| Cursor Agent | ~157.5 MB | 15.9× más RAM |
+| GitHub Copilot CLI | ~158.1 MB | 16.0× más RAM |
+| Claude Code | ~212.7 MB | 21.5× más RAM |
+| OpenCode | ~318.4 MB | 32.2× más RAM |
+
+### 2. Tiempo de Espera para el Primer Input
+*Tiempo que transcurre desde el comando de inicio hasta que el usuario puede escribir en pantalla.*
+
+| Herramienta | Tiempo de Respuesta | Retraso Comparado |
+| :--- | :--- | :--- |
+| **jcode** | **48.7 ms** | **Instantáneo (Línea Base)** |
+| Antigravity CLI | 383.7 ms | 7.9× más lento |
+| pi | 596.4 ms | 12.2× más lento |
+| Codex CLI | 905.8 ms | 18.6× más lento |
+| OpenCode | 1047.9 ms | 21.5× más lento |
+| GitHub Copilot CLI | 1583.4 ms | 32.5× más lento |
+| Cursor Agent | 1978.7 ms | 40.6× más lento |
+| Claude Code | 3512.8 ms | 72.2× más lento |
+
+### 3. Tiempo para el Renderizado del Primer Frame
+*Tiempo necesario para que la interfaz TUI realice el primer dibujado completo en pantalla.*
+
+| Herramienta | Tiempo de Renderizado | Retraso Comparado |
+| :--- | :--- | :--- |
+| **jcode** | **14.0 ms** | **Línea Base** |
+| Antigravity CLI | 383.5 ms | 27.4× más lento |
+| pi | 590.7 ms | 42.2× más lento |
+| Codex CLI | 882.8 ms | 63.1× más lento |
+| OpenCode | 1035.9 ms | 74.0× más lento |
+| GitHub Copilot CLI | 1518.6 ms | 108.5× más lento |
+| Cursor Agent | 1949.7 ms | 139.3× más lento |
+| Claude Code | 3436.9 ms | 245.5× más lento |
 
 ---
 
@@ -106,9 +166,10 @@ Para profundizar en la ingeniería y políticas de adaptación de binarios y wra
 
 ## 💖 Créditos y Agradecimientos
 
-Este repositorio y sus parches no serían posibles sin el soporte técnico de la comunidad de desarrollo en Android:
+Este repositorio y sus parches no serían posibles sin el soporte técnico y aportes de la comunidad de desarrollo en Android:
 
-*   **[Ivam3](https://github.com/ivam3):** Creador de la suite **i-HakLab** y mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
+*   **[kuromi04](https://github.com/kuromi04) (Autor):** Creador del repositorio y desarrollador de los scripts de adaptación, automatizaciones de configuración visual y el menú táctico de instalación/desinstalación para Termux.
+*   **[Ivam3](https://github.com/ivam3) (Sponsor):** Diseñador de la suite **i-HakLab** y mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
 *   **Comunidad i-HakLab / AI-HakLab:** Por testear los límites de los scripts de IA en entornos móviles y reportar fallas comunes.
 
 ---
