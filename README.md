@@ -19,8 +19,9 @@ Optimización, instalación y entorno automatizado para ejecutar **JCode** (el a
 > **¡NO USES la versión de Google Play Store!** La versión de Termux en Google Play está descontinuada y desactualizada, lo que causará fallos graves en los repositorios de paquetes e incompatibilidades con el entorno `glibc`.
 
 Para que `jcodeTermux` funcione correctamente, debes descargar Termux únicamente de sus fuentes oficiales activas:
-*   📥 **[Descargar Termux desde F-Droid](https://f-droid.org/packages/com.termux/)**(Recomendado)
-*   📥 **[Descargar Termux desde GitHub Releases](https://github.com/termux/termux-app/releases)**
+
+*   📥 **[Descargar Termux desde GitHub Releases](https://github.com/termux/termux-app/releases)**(Recomendado)
+*   📥 **[Descargar Termux desde F-Droid](https://f-droid.org/packages/com.termux/)**
 
 ---
 
