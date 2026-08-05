@@ -9,7 +9,7 @@
 [![Glibc Wrapper: Optimized](https://img.shields.io/badge/Glibc%20Wrapper-Optimized-magenta.svg?style=for-the-badge)](docs/skills.md)
 [![Status: Production-Ready](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg?style=for-the-badge)](#)
 
-Optimización, instalación y entorno automatizado para ejecutar **JCode** (el arnés de desarrollo y agente de IA ultraligero escrito en Rust) dentro de **Android** vía **Termux** de forma estable, fluida y sin fallas visuales.
+Optimización, instalación y entorno automatizado para ejecutar **JCode** (Framework de desarrollo y agente de IA ultraligero en Rust) dentro de **Android** vía **Termux** de forma estable, fluida y sin fallas visuales.
 
 ---
 
@@ -27,7 +27,7 @@ Para que `jcodeTermux` funcione correctamente, debes descargar Termux únicament
 
 ## 🌟 ¿Por qué recomendamos JCode? (Nuestra Recomendación)
 
-**JCode** destaca sobre otros arneses de IA tradicionales debido a su diseño de alto rendimiento centrado en terminales:
+**JCode** destaca sobre otros frameworks de IA tradicionales debido a su diseño de alto rendimiento centrado en terminales:
 *   **Velocidad y Fluidez Excepcional:** Escrito en **Rust**, inicia en milisegundos y consume una fracción de la memoria RAM que requerirían herramientas pesadas basadas en Node.js o Python.
 *   **Multitud de Modelos y Proveedores:** Soporta configuración inmediata y cambio en caliente (mediante `/model`) de casi cualquier proveedor líder de LLM en el mercado:
     *   *Comerciales:* OpenAI (ChatGPT Pro), Claude (Anthropic Max), Google Gemini.
