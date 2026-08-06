@@ -2,6 +2,7 @@
 # ==============================================================================
 #  jcodeTermux — Tactical Configurator & Setup Menu for JCode & Walkie
 #  Developed for Android/Termux environments.
+#  Credits & Acknowledgements to Ivam3
 # ==============================================================================
 
 # ── Colores y Estilo ──────────────────────────────────────────────────────────
@@ -32,7 +33,7 @@ header() {
     echo -e "${MAGENTA}${BOLD}                                                                      ${RESET}"
     echo -e "${CYAN}${BOLD}     Tactical JCode & Walkie Installer & Configurator for Termux       ${RESET}"
     echo -e "${CYAN}${BOLD}======================================================================${RESET}"
-    echo -e " Soporte: ${YELLOW}JCode & Walkie-Termux${RESET} | Estado: ${GREEN}Termux-Optimized${RESET}"
+    echo -e " Soporte: ${YELLOW}JCode & Walkie-Termux${RESET} | Sponsor: ${YELLOW}Ivam3${RESET} | Estado: ${GREEN}Termux-Optimized${RESET}"
     echo -e "----------------------------------------------------------------------\n"
 }
 
@@ -46,7 +47,7 @@ check_glibc() {
     if [ ! -d "/data/data/com.termux/files/usr/glibc" ]; then
         log_warn "No se detectó el entorno glibc en Termux."
         log_info "JCode requiere glibc para ejecutar su binario compilado nativamente."
-        log_info "Por favor, asegúrate de tener el entorno glibc configurado en Termux."
+        log_info "Por favor, asegúrate de tener el entorno glibc configurado en Termux vía ivam3/termux-packages."
     fi
 }
 
@@ -432,7 +433,7 @@ main_menu() {
             7) action_uninstall ;;
             8)
                 header
-                echo -e "${GREEN}${BOLD}¡Gracias por usar jcodeTermux!${RESET}"
+                echo -e "${GREEN}${BOLD}¡Gracias por usar jcodeTermux! Saludos al gran Ivam3 por el soporte de la comunidad.${RESET}"
                 echo -e "Saliendo...\n"
                 exit 0
                 ;;

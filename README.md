@@ -25,7 +25,7 @@ Para que `jcodeTermux` funcione correctamente, debes descargar Termux únicament
 
 ## 🌟 JCode & Walkie-Termux en un solo lugar
 
-Este repositorio ahora unifica la configuración de dos herramientas fundamentales de IA y automatización para terminal móvil:
+Este repositorio unifica la configuración de dos herramientas fundamentales de IA y automatización para terminal móvil:
 
 1.  **JCode:** Framework de desarrollo en Rust ultrarrápido con soporte multi-proveedor.
 2.  **Walkie-Termux:** Orquestador de agentes y comunicación chat P2P descentralizada.
@@ -50,6 +50,27 @@ Este repositorio ahora unifica la configuración de dos herramientas fundamental
     walkie web
     ```
     *Accede vía `http://127.0.0.1:3000/?v=4` en tu navegador móvil.*
+
+---
+
+## 🛠️ Notas de Orquestación (Cómo se resolvió)
+
+Durante el despliegue en Termux, se abordaron varios desafíos específicos de la plataforma:
+
+1. **Resolución del Wrapper de NPM en Termux:**
+   El script wrapper global de `npm` del sistema entraba en un bucle infinito en instalaciones sin argumentos. Para instalar las dependencias, puenteamos este script ejecutando directamente el binario nativo de npm en el prefijo de Termux:
+   ```bash
+   /data/data/com.termux/files/usr/bin/npm install
+   ```
+2. **Corrección de Shebang en Android Node:**
+   Las rutas estándar de shebang fallan en Termux debido a la estructura de directorios de Android. Corregimos el ejecutable global utilizando la herramienta de Termux:
+   ```bash
+   termux-fix-shebang $(which walkie)
+   ```
+3. **UI Web Responsiva para Móviles:**
+   Ajustamos el diseño de la interfaz (`src/web-ui.js`) para soportar pantallas verticales y pantallas táctiles, implementando barras laterales colapsables automáticamente y un botón de retroceso móvil (`←`).
+4. **Conexiones WebSocket en Chrome para Android:**
+   Los navegadores móviles aplican estrictos límites de seguridad en las conexiones de loopback. Verificamos que al usar direcciones IP numéricas explícitas (`127.0.0.1:3000` o la IP local de la red) se evitan con éxito estas restricciones.
 
 ---
 
@@ -127,7 +148,7 @@ El repositorio incluye un script con interfaz de menú interactivo en el termina
                                                                       
      Tactical JCode & Walkie Installer & Configurator for Termux        
 ======================================================================
- Soporte: JCode & Walkie-Termux | Estado: Termux-Optimized
+ Soporte: JCode & Walkie-Termux | Sponsor: Ivam3 | Estado: Termux-Optimized
 ----------------------------------------------------------------------
 
  1) Instalar / Reinstalar JCode (Termux Patch)
@@ -188,6 +209,7 @@ Para profundizar en la ingeniería y políticas de adaptación de binarios, cons
 Este proyecto y sus configuraciones han sido desarrollados por:
 
 *   **[kuromi04](https://github.com/kuromi04) (Autor):** Creador del repositorio y desarrollador de los scripts de adaptación, automatizaciones de configuración visual y el menú táctico de instalación/desinstalación para Termux.
+*   **[Ivam3](https://github.com/ivam3):** Creador y mantenedor de repositorios de paquetes de compatibilidad y optimizados que suministran glibc base para Termux, facilitando el soporte técnico.
 *   **Comunidad de Termux:** Por el constante desarrollo y soporte para correr Linux en Android de forma nativa.
 
 ---
