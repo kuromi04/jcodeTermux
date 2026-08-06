@@ -57,19 +57,14 @@ Este repositorio unifica la configuración de dos herramientas fundamentales de 
 
 Durante el despliegue en Termux, se abordaron varios desafíos específicos de la plataforma:
 
-1. **Resolución del Wrapper de NPM en Termux:**
-   El script wrapper global de `npm` del sistema entraba en un bucle infinito en instalaciones sin argumentos. Para instalar las dependencias, puenteamos este script ejecutando directamente el binario nativo de npm en el prefijo de Termux:
-   ```bash
-   /data/data/com.termux/files/usr/bin/npm install
-   ```
-2. **Corrección de Shebang en Android Node:**
+1. **Corrección de Shebang en Android Node:**
    Las rutas estándar de shebang fallan en Termux debido a la estructura de directorios de Android. Corregimos el ejecutable global utilizando la herramienta de Termux:
    ```bash
    termux-fix-shebang $(which walkie)
    ```
-3. **UI Web Responsiva para Móviles:**
+2. **UI Web Responsiva para Móviles:**
    Ajustamos el diseño de la interfaz (`src/web-ui.js`) para soportar pantallas verticales y pantallas táctiles, implementando barras laterales colapsables automáticamente y un botón de retroceso móvil (`←`).
-4. **Conexiones WebSocket en Chrome para Android:**
+3. **Conexiones WebSocket en Chrome para Android:**
    Los navegadores móviles aplican estrictos límites de seguridad en las conexiones de loopback. Verificamos que al usar direcciones IP numéricas explícitas (`127.0.0.1:3000` o la IP local de la red) se evitan con éxito estas restricciones.
 
 ---
