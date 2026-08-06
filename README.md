@@ -5,11 +5,9 @@
 </p>
 
 [![Platform: Termux](https://img.shields.io/badge/Platform-Termux-green.svg?style=for-the-badge&logo=android)](https://termux.dev)
-[![Ecosystem: i-HakLab](https://img.shields.io/badge/Ecosystem-i--HakLab-blue.svg?style=for-the-badge)](https://github.com/ivam3)
-[![Glibc Wrapper: Optimized](https://img.shields.io/badge/Glibc%20Wrapper-Optimized-magenta.svg?style=for-the-badge)](docs/skills.md)
 [![Status: Production-Ready](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg?style=for-the-badge)](#)
 
-Optimización, instalación y entorno automatizado para ejecutar **JCode** (Framework de desarrollo y agente de IA ultraligero en Rust) dentro de **Android** vía **Termux** de forma estable, fluida y sin fallas visuales.
+Optimización, instalación y entorno automatizado para ejecutar **JCode** (Framework de desarrollo y agente de IA en Rust) y **Walkie-Termux** (Orquestación de Agentes de IA P2P descentralizados) dentro de **Android** vía **Termux** de forma estable y optimizada.
 
 ---
 
@@ -20,20 +18,38 @@ Optimización, instalación y entorno automatizado para ejecutar **JCode** (Fram
 
 Para que `jcodeTermux` funcione correctamente, debes descargar Termux únicamente de sus fuentes oficiales activas:
 
-*   📥 **[Descargar Termux desde GitHub Releases](https://github.com/termux/termux-app/releases)**(Recomendado)
+*   📥 **[Descargar Termux desde GitHub Releases](https://github.com/termux/termux-app/releases)** (Recomendado)
 *   📥 **[Descargar Termux desde F-Droid](https://f-droid.org/packages/com.termux/)**
 
 ---
 
-## 🌟 ¿Por qué recomendamos JCode? (Nuestra Recomendación)
+## 🌟 JCode & Walkie-Termux en un solo lugar
 
-**JCode** destaca sobre otros frameworks de IA tradicionales debido a su diseño de alto rendimiento centrado en terminales:
-*   **Velocidad y Fluidez Excepcional:** Escrito en **Rust**, inicia en milisegundos y consume una fracción de la memoria RAM que requerirían herramientas pesadas basadas en Node.js o Python.
-*   **Multitud de Modelos y Proveedores:** Soporta configuración inmediata y cambio en caliente (mediante `/model`) de casi cualquier proveedor líder de LLM en el mercado:
-    *   *Comerciales:* OpenAI (ChatGPT Pro), Claude (Anthropic Max), Google Gemini.
-    *   *Agregadores y Nube:* OpenRouter, Deepinfra, TogetherAI, Fireworks, Groq.
-    *   *Locales (Sin Conexión):* LM Studio, Ollama, y servidores compatibles con OpenAI.
-*   **Pensado para Power Users:** Su interfaz de terminal interactiva (TUI) te permite codificar en parejas, administrar archivos y ejecutar comandos sin perder el enfoque ni abandonar la consola.
+Este repositorio ahora unifica la configuración de dos herramientas fundamentales de IA y automatización para terminal móvil:
+
+1.  **JCode:** Framework de desarrollo en Rust ultrarrápido con soporte multi-proveedor.
+2.  **Walkie-Termux:** Orquestador de agentes y comunicación chat P2P descentralizada.
+
+---
+
+## 🛰️ Walkie-Termux (Orquestación P2P)
+
+**Walkie-Termux** permite levantar canales P2P descentralizados y sin servidores centrales directamente en dispositivos móviles. Puedes usarlo para chat colaborativo o delegar tareas a agentes de IA.
+
+### Comandos de Ejecución de Walkie:
+*   **Chat de Terminal P2P:**
+    ```bash
+    walkie chat nombre-de-mi-canal
+    ```
+*   **Escucha del Agente de IA:**
+    ```bash
+    walkie agent nombre-de-mi-canal --cli codex --name "Asistente" --prompt "Eres un asistente servicial de Termux."
+    ```
+*   **Panel de Control Web UI:**
+    ```bash
+    walkie web
+    ```
+    *Accede vía `http://127.0.0.1:3000/?v=4` en tu navegador móvil.*
 
 ---
 
@@ -93,7 +109,7 @@ El binario oficial de **JCode** está compilado nativamente para arquitecturas G
 2. **Shebangs Corruptos:** El instalador genera wrappers apuntando a `#!/usr/bin/env bash`, ruta que no existe de forma nativa en Termux.
 3. **TUI Glitch (Inestabilidad Visual):** Los terminales emulados en móviles colapsan ante actualizaciones continuas de alta frecuencia (como las animaciones de carga e idle a 25+ FPS), ocultando el texto del chat.
 
-**jcodeTermux** soluciona esto aplicando las reglas de la base de conocimiento de **Termux-Oracle**.
+**jcodeTermux** soluciona esto aplicando reglas y optimizaciones de compatibilidad de binarios y buffers dinámicos para Android.
 
 ---
 
@@ -109,19 +125,21 @@ El repositorio incluye un script con interfaz de menú interactivo en el termina
   / /_/ / /__  / /_/ / /_/ /   / / /  __/ /   / / / / / / /_/ />  <    
   \____/\___/  \____/\__,_/   /_/  \___/_/   /_/ /_/ /_/\__,_/_/|_|    
                                                                       
-     Tactical JCode Installer & Configurator for Android/Termux        
+     Tactical JCode & Walkie Installer & Configurator for Termux        
 ======================================================================
- Ecosistema: i-HakLab | Sponsor: Ivam3 | Estado: Termux-Optimized
+ Soporte: JCode & Walkie-Termux | Estado: Termux-Optimized
 ----------------------------------------------------------------------
 
  1) Instalar / Reinstalar JCode (Termux Patch)
- 2) Optimizar Pantalla y Animaciones (Evita parpadeos y letras invisibles)
- 3) Administrar Servidor Daemon (Iniciar/Detener)
- 4) Diagnóstico de Sistema y Autenticación
- 5) Desinstalar JCode y Borrar Todo
- 6) Salir
+ 2) Optimizar Pantalla y Animaciones de JCode
+ 3) Administrar Servidor Daemon JCode
+ 4) Instalar / Reinstalar Walkie-Termux (P2P Client)
+ 5) Ejecutar Walkie-Termux (Chat, Agente o Web UI)
+ 6) Diagnóstico de Sistema y Autenticación
+ 7) Desinstalar Todo (JCode & Walkie)
+ 8) Salir
 
- Elige una opción [1-6]: 
+ Elige una opción [1-8]: 
 ```
 
 ---
@@ -144,7 +162,7 @@ chmod +x setup.sh
 
 ---
 
-## ⚙️ Optimización Visual Aplicada
+## ⚙️ Optimización Visual Aplicada a JCode
 
 El asistente modifica automáticamente tu archivo `~/.jcode/config.toml` con parámetros ajustados para Termux:
 
@@ -156,9 +174,9 @@ El asistente modifica automáticamente tu archivo `~/.jcode/config.toml` con par
 
 ---
 
-## 📚 Documentación Técnica & Skills (Termux-Oracle)
+## 📚 Documentación Técnica & Skills
 
-Para profundizar en la ingeniería y políticas de adaptación de binarios y wrappers, consulta nuestra [Guía Experta de Adaptación](docs/skills.md) basada en **Termux-Oracle**, que detalla:
+Para profundizar en la ingeniería y políticas de adaptación de binarios, consulta nuestra [Guía de Adaptación](docs/skills.md), que detalla:
 *   Mapeo de intérpretes dinámicos de ELF con `patchelf`.
 *   Ajustes y resolución de variables críticas (`GLIBC_TUNABLES`, `LD_PRELOAD`).
 *   Troubleshooting y solución de errores en Termux.
@@ -167,11 +185,10 @@ Para profundizar en la ingeniería y políticas de adaptación de binarios y wra
 
 ## 💖 Créditos y Agradecimientos
 
-Este repositorio y sus parches no serían posibles sin el soporte técnico y aportes de la comunidad de desarrollo en Android:
+Este proyecto y sus configuraciones han sido desarrollados por:
 
-*   **[Ivam3](https://github.com/ivam3) (Sponsor):** Diseñador de la suite **i-HakLab** y creador de Termux-Oracle, mantenedor de repositorios de paquetes optimizados que suministran glibc base para Termux.
-*   **Comunidad i-HakLab / AI-HakLab:** Por testear los límites de los scripts de IA en entornos móviles y reportar fallas comunes.
 *   **[kuromi04](https://github.com/kuromi04) (Autor):** Creador del repositorio y desarrollador de los scripts de adaptación, automatizaciones de configuración visual y el menú táctico de instalación/desinstalación para Termux.
+*   **Comunidad de Termux:** Por el constante desarrollo y soporte para correr Linux en Android de forma nativa.
 
 ---
 

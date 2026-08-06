@@ -1,8 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ==============================================================================
-#  jcodeTermux — Tactical Configurator & Setup Menu for JCode
-#  Developed for Android/Termux environments with glibc support.
-#  Credits & Acknowledgements to Ivam3 & AI-HakLab
+#  jcodeTermux — Tactical Configurator & Setup Menu for JCode & Walkie
+#  Developed for Android/Termux environments.
 # ==============================================================================
 
 # ── Colores y Estilo ──────────────────────────────────────────────────────────
@@ -31,9 +30,9 @@ header() {
     echo -e "${MAGENTA}${BOLD}  / /_/ / /__  / /_/ / /_/ /   / / /  __/ /   / / / / / / /_/ />  <    ${RESET}"
     echo -e "${MAGENTA}${BOLD}  \____/\___/  \____/\__,_/   /_/  \___/_/   /_/ /_/ /_/\__,_/_/|_|    ${RESET}"
     echo -e "${MAGENTA}${BOLD}                                                                      ${RESET}"
-    echo -e "${CYAN}${BOLD}     Tactical JCode Installer & Configurator for Android/Termux        ${RESET}"
+    echo -e "${CYAN}${BOLD}     Tactical JCode & Walkie Installer & Configurator for Termux       ${RESET}"
     echo -e "${CYAN}${BOLD}======================================================================${RESET}"
-    echo -e " Ecosistema: ${YELLOW}i-HakLab${RESET} | Sponsor: ${YELLOW}Ivam3${RESET} | Estado: ${GREEN}Termux-Optimized${RESET}"
+    echo -e " Soporte: ${YELLOW}JCode & Walkie-Termux${RESET} | Estado: ${GREEN}Termux-Optimized${RESET}"
     echo -e "----------------------------------------------------------------------\n"
 }
 
@@ -46,13 +45,13 @@ press_enter() {
 check_glibc() {
     if [ ! -d "/data/data/com.termux/files/usr/glibc" ]; then
         log_warn "No se detectó el entorno glibc en Termux."
-        log_info "Este instalador requiere glibc para ejecutar binarios x86/aarch64 compilados de forma nativa."
-        log_info "Por favor, asegúrate de tener el entorno glibc configurado vía i-HakLab o ivam3/termux-packages."
+        log_info "JCode requiere glibc para ejecutar su binario compilado nativamente."
+        log_info "Por favor, asegúrate de tener el entorno glibc configurado en Termux."
     fi
 }
 
 # ── Opción 1: Instalar / Reinstalar JCode ─────────────────────────────────────
-action_install() {
+action_install_jcode() {
     header
     log_info "Iniciando instalación oficial de JCode..."
     check_glibc
@@ -134,8 +133,6 @@ EOF
     sed -i 's/redraw_fps\s*=\s*[0-9]*/redraw_fps = 12/g' "$config_file"
     sed -i 's/mouse_capture\s*=\s*true/mouse_capture = false/g' "$config_file"
     
-    # En caso de que no existan las variables, las agregamos al final del display
-    # (El bloque display suele estar al inicio o definido explícitamente)
     log_success "Valores parchados exitosamente:"
     echo -e "  - ${CYAN}idle_animation = false${RESET} (Evita refrescos de pantalla continuos en reposo)"
     echo -e "  - ${CYAN}prompt_entry_animation = false${RESET} (Evita corrupción del prompt al escribir)"
@@ -155,7 +152,7 @@ EOF
     press_enter
 }
 
-# ── Opción 3: Iniciar / Detener / Reiniciar Servidor ──────────────────────────
+# ── Opción 3: Iniciar / Detener / Reiniciar Servidor JCode ────────────────────
 action_manage_server() {
     while true; do
         header
@@ -163,9 +160,9 @@ action_manage_server() {
         pid=$(pgrep -f "jcode.*serve" || echo "")
         
         if [ -n "$pid" ]; then
-            echo -e " Estado del Servidor: ${GREEN}${BOLD}ACTIVO (PID: $pid)${RESET}\n"
+            echo -e " Estado del Servidor JCode: ${GREEN}${BOLD}ACTIVO (PID: $pid)${RESET}\n"
         else
-            echo -e " Estado del Servidor: ${RED}${BOLD}INACTIVO${RESET}\n"
+            echo -e " Estado del Servidor JCode: ${RED}${BOLD}INACTIVO${RESET}\n"
         fi
         
         echo -e " ${CYAN}1)${RESET} Iniciar Servidor Daemon"
@@ -205,7 +202,123 @@ action_manage_server() {
     done
 }
 
-# ── Opción 4: Diagnóstico y Estado ────────────────────────────────────────────
+# ── Opción 4: Instalar / Reinstalar Walkie-Termux ──────────────────────────────
+action_install_walkie() {
+    header
+    log_info "Iniciando instalación de Walkie-Termux..."
+    
+    # 1. Instalar dependencias del sistema
+    log_info "Verificando/instalando nodejs y git..."
+    pkg update && pkg install nodejs git -y
+    
+    # 2. Clonar / actualizar el repositorio
+    local walkie_dir="$HOME/walkieTermux"
+    if [ ! -d "$walkie_dir" ]; then
+        log_info "Clonando Walkie-Termux desde GitHub..."
+        git clone https://github.com/kuromi04/walkieTermux.git "$walkie_dir"
+    else
+        log_info "El directorio $walkie_dir ya existe. Actualizando repositorio..."
+        (cd "$walkie_dir" && git pull)
+    fi
+    
+    # 3. Instalar dependencias de npm evitando wrappers
+    log_info "Instalando dependencias de Node.js..."
+    if [ -f "/data/data/com.termux/files/usr/bin/npm" ]; then
+        (cd "$walkie_dir" && /data/data/com.termux/files/usr/bin/npm install)
+    else
+        (cd "$walkie_dir" && npm install)
+    fi
+    
+    # 4. Enlazar globalmente y aplicar patch de shebang
+    log_info "Enlazando binario global..."
+    (cd "$walkie_dir" && npm install -g .)
+    
+    local global_walkie="$HOME/.npm-global/bin/walkie"
+    if [ -f "$global_walkie" ]; then
+        log_info "Aplicando termux-fix-shebang en $global_walkie..."
+        termux-fix-shebang "$global_walkie"
+    elif command -v walkie >/dev/null 2>&1; then
+        local walkie_path
+        walkie_path=$(which walkie)
+        log_info "Aplicando termux-fix-shebang en $walkie_path..."
+        termux-fix-shebang "$walkie_path"
+    else
+        log_warn "No se pudo localizar el binario global de walkie para corregir el shebang."
+    fi
+    
+    log_success "¡Walkie-Termux instalado con éxito!"
+    press_enter
+}
+
+# ── Opción 5: Ejecutar Walkie-Termux ──────────────────────────────────────────
+action_run_walkie() {
+    while true; do
+        header
+        echo -e "   --- Menú de Operación de Walkie-Termux ---"
+        echo -e " ${CYAN}1)${RESET} Iniciar Chat de Terminal P2P (walkie chat)"
+        echo -e " ${CYAN}2)${RESET} Iniciar Agente de IA P2P Listener (walkie agent)"
+        echo -e " ${CYAN}3)${RESET} Iniciar Panel de Control Web UI (walkie web)"
+        echo -e " ${CYAN}4)${RESET} Volver al menú principal"
+        echo -e ""
+        echo -ne " ${WHITE}Elige una opción [1-4]: ${RESET}"
+        read -r w_opt
+        
+        case "$w_opt" in
+            1)
+                echo -ne " ${WHITE}Ingresa el nombre del canal P2P: ${RESET}"
+                read -r channel
+                if [ -n "$channel" ]; then
+                    log_info "Iniciando chat interactivo en el canal '$channel'..."
+                    walkie chat "$channel"
+                else
+                    log_error "El nombre del canal no puede estar vacío."
+                    sleep 1.5
+                fi
+                ;;
+            2)
+                echo -ne " ${WHITE}Ingresa el nombre del canal P2P: ${RESET}"
+                read -r channel
+                if [ -n "$channel" ]; then
+                    echo -e " Selecciona el cliente CLI de IA a usar:"
+                    echo -e "   1) Codex (predeterminado)"
+                    echo -e "   2) Claude"
+                    echo -ne "   Elige una opción [1-2]: "
+                    read -r cli_opt
+                    local cli="codex"
+                    [ "$cli_opt" = "2" ] && cli="claude"
+                    
+                    echo -ne "   Nombre del Agente [TermuxAgent]: "
+                    read -r agent_name
+                    [ -z "$agent_name" ] && agent_name="TermuxAgent"
+                    
+                    echo -ne "   System Prompt [Eres un asistente servicial de Termux]: "
+                    read -r agent_prompt
+                    [ -z "$agent_prompt" ] && agent_prompt="Eres un asistente servicial de Termux."
+                    
+                    log_info "Iniciando escucha del Agente de IA ($agent_name) en '$channel'..."
+                    walkie agent "$channel" --cli "$cli" --name "$agent_name" --prompt "$agent_prompt"
+                else
+                    log_error "El nombre del canal no puede estar vacío."
+                    sleep 1.5
+                fi
+                ;;
+            3)
+                log_info "Iniciando panel de control Web UI..."
+                log_info "Accede a: http://127.0.0.1:3000/?v=4 en tu navegador."
+                walkie web
+                ;;
+            4)
+                break
+                ;;
+            *)
+                log_warn "Opción inválida."
+                sleep 1
+                ;;
+        esac
+    done
+}
+
+# ── Opción 6: Diagnóstico y Estado ────────────────────────────────────────────
 action_diagnose() {
     header
     log_info "--- Diagnóstico de Sistema ---"
@@ -219,7 +332,7 @@ action_diagnose() {
         echo -e "${RED}No encontrado en PATH${RESET}"
     fi
     
-    echo -ne " ${BOLD}Servidor Daemon:${RESET} "
+    echo -ne " ${BOLD}Servidor Daemon JCode:${RESET} "
     local pid
     pid=$(pgrep -f "jcode.*serve" || echo "")
     if [ -n "$pid" ]; then
@@ -235,7 +348,16 @@ action_diagnose() {
         echo -e "${YELLOW}No detectado (~/usr/glibc)${RESET}"
     fi
     
-    echo -e "\n--- Estado de Autenticación de Proveedores ---"
+    echo -ne " ${BOLD}Comando Walkie:${RESET} "
+    if command -v walkie >/dev/null 2>&1; then
+        echo -e "${GREEN}Disponible en PATH${RESET}"
+        echo -ne " ${BOLD}Ubicación:${RESET} "
+        which walkie
+    else
+        echo -e "${RED}No encontrado en PATH${RESET}"
+    fi
+    
+    echo -e "\n--- Estado de Autenticación de JCode ---"
     if command -v jcode >/dev/null 2>&1; then
         jcode auth status || log_error "No se pudo consultar el estado de autenticación."
     else
@@ -245,17 +367,17 @@ action_diagnose() {
     press_enter
 }
 
-# ── Opción 5: Desinstalación y Borrado Total ──────────────────────────────────
+# ── Opción 7: Desinstalación y Borrado Total ──────────────────────────────────
 action_uninstall() {
     header
-    log_warn "ESTÁS A PUNTO DE ELIMINAR COMPLETAMENTE JCODE DE TU SISTEMA"
+    log_warn "ESTÁS A PUNTO DE ELIMINAR COMPLETAMENTE JCODE Y WALKIE DE TU SISTEMA"
     echo -ne " ${WHITE}¿Estás seguro de que deseas desinstalar y borrar todo? [s/N]: ${RESET}"
     read -r confirm
     
     if [[ "$confirm" =~ ^[sS]$ ]]; then
         log_info "Iniciando la desinstalación completa..."
         
-        # 1. Detener el servidor
+        # 1. Detener el servidor JCode
         log_info "Deteniendo el servidor JCode Daemon..."
         jcode server stop --force >/dev/null 2>&1 || true
         local pid
@@ -263,15 +385,21 @@ action_uninstall() {
         if [ -n "$pid" ]; then
             kill -9 "$pid" >/dev/null 2>&1 || true
         fi
-        log_success "Servidores detenidos."
         
-        # 2. Borrar ejecutables y directorios
-        log_info "Borrando binarios, tokens, caché y configuraciones locales..."
+        # 2. Borrar ejecutables y directorios de JCode
+        log_info "Borrando binarios, tokens, caché y configuraciones locales de JCode..."
         rm -f "$HOME/.local/bin/jcode"
         rm -rf "$HOME/.jcode"
         rm -rf "$HOME/.config/jcode"
         
-        log_success "¡JCode y todo lo referente a la herramienta ha sido eliminado!"
+        # 3. Borrar ejecutables y directorios de Walkie-Termux
+        log_info "Borrando Walkie-Termux y sus dependencias globales..."
+        npm uninstall -g walkie-termux >/dev/null 2>&1 || true
+        npm uninstall -g walkie >/dev/null 2>&1 || true
+        rm -rf "$HOME/walkieTermux"
+        rm -rf "$HOME/.npm-global/bin/walkie"
+        
+        log_success "¡JCode, Walkie-Termux y sus configuraciones asociadas han sido eliminadas!"
     else
         log_info "Operación cancelada."
     fi
@@ -283,29 +411,33 @@ main_menu() {
     while true; do
         header
         echo -e " ${CYAN}1)${RESET} Instalar / Reinstalar JCode (Termux Patch)"
-        echo -e " ${CYAN}2)${RESET} Optimizar Pantalla y Animaciones (Evita parpadeos y letras invisibles)"
-        echo -e " ${CYAN}3)${RESET} Administrar Servidor Daemon (Iniciar/Detener)"
-        echo -e " ${CYAN}4)${RESET} Diagnóstico de Sistema y Autenticación"
-        echo -e " ${CYAN}5)${RESET} Desinstalar JCode y Borrar Todo"
-        echo -e " ${CYAN}6)${RESET} Salir"
+        echo -e " ${CYAN}2)${RESET} Optimizar Pantalla y Animaciones de JCode"
+        echo -e " ${CYAN}3)${RESET} Administrar Servidor Daemon JCode"
+        echo -e " ${CYAN}4)${RESET} Instalar / Reinstalar Walkie-Termux (P2P Client)"
+        echo -e " ${CYAN}5)${RESET} Ejecutar Walkie-Termux (Chat, Agente o Web UI)"
+        echo -e " ${CYAN}6)${RESET} Diagnóstico de Sistema y Autenticación"
+        echo -e " ${CYAN}7)${RESET} Desinstalar Todo (JCode & Walkie)"
+        echo -e " ${CYAN}8)${RESET} Salir"
         echo -e ""
-        echo -ne " ${WHITE}Elige una opción [1-6]: ${RESET}"
+        echo -ne " ${WHITE}Elige una opción [1-8]: ${RESET}"
         read -r opt
         
         case "$opt" in
-            1) action_install ;;
+            1) action_install_jcode ;;
             2) action_configure_visuals ;;
             3) action_manage_server ;;
-            4) action_diagnose ;;
-            5) action_uninstall ;;
-            6)
+            4) action_install_walkie ;;
+            5) action_run_walkie ;;
+            6) action_diagnose ;;
+            7) action_uninstall ;;
+            8)
                 header
-                echo -e "${GREEN}${BOLD}¡Gracias por usar jcodeTermux! Saludos al gran Ivam3 por el soporte de la comunidad.${RESET}"
+                echo -e "${GREEN}${BOLD}¡Gracias por usar jcodeTermux!${RESET}"
                 echo -e "Saliendo...\n"
                 exit 0
                 ;;
             *)
-                log_warn "Opción inválida. Elige un número del 1 al 6."
+                log_warn "Opción inválida. Elige un número del 1 al 8."
                 sleep 1
                 ;;
         esac
