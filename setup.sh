@@ -66,10 +66,29 @@ action_install_jcode() {
         return 1
     fi
     
-    # 2. Corregir shebang y entorno en el wrapper de la CLI
     local launcher_path="$HOME/.local/bin/jcode"
     local stable_binary="$HOME/.jcode/builds/stable/jcode"
-    
+    local real_binary
+    real_binary="$(readlink -f "$stable_binary" 2>/dev/null || echo "$stable_binary")"
+
+    # 2. Parchar el binario ELF con el cargador glibc
+    log_info "Parchando el binario ELF con el cargador glibc..."
+    if [ -f "$real_binary" ]; then
+        if command -v grun >/dev/null 2>&1; then
+            grun -c "$real_binary" >/dev/null 2>&1
+            log_success "Binario ELF adaptado correctamente con grun."
+        elif [ -x "/data/data/com.termux/files/usr/glibc/bin/patchelf" ]; then
+            /data/data/com.termux/files/usr/glibc/bin/patchelf \
+                --set-rpath "/data/data/com.termux/files/usr/glibc/lib" \
+                --set-interpreter "/data/data/com.termux/files/usr/glibc/lib/ld-linux-aarch64.so.1" \
+                "$real_binary" >/dev/null 2>&1
+            log_success "Binario ELF adaptado correctamente con patchelf."
+        else
+            log_warn "No se encontró grun ni patchelf para adaptar el binario directamente."
+        fi
+    fi
+
+    # 3. Corregir shebang y entorno en el wrapper de la CLI (con auto-reparación)
     log_info "Aplicando parche de Shebang y GLIBC en el Wrapper..."
     if [ -f "$launcher_path" ]; then
         cat << 'EOF' > "$launcher_path"
@@ -79,7 +98,30 @@ unset LD_PRELOAD
 unset LD_LIBRARY_PATH
 export GLIBC_TUNABLES="glibc.rtld.dynamic_sort=1"
 
-exec "/data/data/com.termux/files/home/.jcode/builds/stable/jcode" "$@"
+TARGET="$HOME/.jcode/builds/stable/jcode"
+REAL_BIN="$(readlink -f "$TARGET" 2>/dev/null || echo "$TARGET")"
+
+# Auto-reparación: Si una actualización descargó un binario nuevo sin parchar
+if [ -f "$REAL_BIN" ]; then
+    if readelf -l "$REAL_BIN" 2>/dev/null | grep -q '/lib/ld-linux'; then
+        if command -v grun >/dev/null 2>&1; then
+            grun -c "$REAL_BIN" >/dev/null 2>&1
+        elif [ -x "/data/data/com.termux/files/usr/glibc/bin/patchelf" ]; then
+            /data/data/com.termux/files/usr/glibc/bin/patchelf \
+                --set-rpath "/data/data/com.termux/files/usr/glibc/lib" \
+                --set-interpreter "/data/data/com.termux/files/usr/glibc/lib/ld-linux-aarch64.so.1" \
+                "$REAL_BIN" >/dev/null 2>&1
+        fi
+    fi
+fi
+
+if [ -x "$TARGET" ]; then
+    exec "$TARGET" "$@"
+elif command -v grun >/dev/null 2>&1; then
+    exec grun "$TARGET" "$@"
+else
+    exec "/data/data/com.termux/files/usr/glibc/lib/ld-linux-aarch64.so.1" --library-path "/data/data/com.termux/files/usr/glibc/lib" "$TARGET" "$@"
+fi
 EOF
         chmod +x "$launcher_path"
         log_success "Launcher wrapper corregido en: $launcher_path"
@@ -87,7 +129,7 @@ EOF
         log_error "No se encontró el wrapper en $launcher_path para parchar."
     fi
     
-    # 3. Mostrar versión instalada
+    # 4. Mostrar versión instalada
     echo ""
     if command -v jcode >/dev/null 2>&1; then
         log_success "JCode responde correctamente en el PATH!"

@@ -22,18 +22,40 @@ Para que `jcode` pueda cargarse y ejecutarse dinámicamente con soporte glibc si
 ### El cargador y las variables de entorno:
 Se deben limpiar las variables nativas que puedan corromper la carga de librerías cruzadas (como `LD_PRELOAD`, usada comúnmente en Termux para termux-exec) y establecer los parámetros de sorting de glibc para compatibilidad aarch64.
 
-### Estructura de Wrapper Estandarizada:
+### Adaptación del Binario ELF:
+El binario original solicita `/lib/ld-linux-aarch64.so.1` como intérprete dinámico, ruta que no existe en Android. Para que el kernel de Android pueda ejecutarlo directamente, se parcha con `patchelf` o `grun -c`:
+```bash
+grun -c ~/.jcode/builds/stable/jcode
+# o manualmente con patchelf:
+patchelf --set-rpath "$PREFIX/glibc/lib" \
+         --set-interpreter "$PREFIX/glibc/lib/ld-linux-aarch64.so.1" \
+         "$(readlink -f ~/.jcode/builds/stable/jcode)"
+```
+
+### Estructura de Wrapper Estandarizada (Auto-reparación):
 ```bash
 #!/data/data/com.termux/files/usr/bin/bash
 # 1. Aislar de inyecciones nativas de Termux
 unset LD_PRELOAD
 unset LD_LIBRARY_PATH
 
-# 2. Prevenir errores de orden dinámico en cargadores glibc antiguos/especiales
+# 2. Prevenir errores de orden dinámico en cargadores glibc
 export GLIBC_TUNABLES="glibc.rtld.dynamic_sort=1"
 
-# 3. Lanzar el binario real parchado por patchelf
-exec "/data/data/com.termux/files/home/.jcode/builds/stable/jcode" "$@"
+TARGET="$HOME/.jcode/builds/stable/jcode"
+REAL_BIN="$(readlink -f "$TARGET" 2>/dev/null || echo "$TARGET")"
+
+# 3. Auto-reparación si el binario fue actualizado y aún no ha sido parchado
+if [ -f "$REAL_BIN" ] && readelf -l "$REAL_BIN" 2>/dev/null | grep -q '/lib/ld-linux'; then
+    command -v grun >/dev/null 2>&1 && grun -c "$REAL_BIN" >/dev/null 2>&1
+fi
+
+# 4. Lanzar el binario (directo o con fallback seguro a grun)
+if [ -x "$TARGET" ]; then
+    exec "$TARGET" "$@"
+else
+    exec grun "$TARGET" "$@"
+fi
 ```
 
 ---
