@@ -32,6 +32,22 @@ patchelf --set-rpath "$PREFIX/glibc/lib" \
          "$(readlink -f ~/.jcode/builds/stable/jcode)"
 ```
 
+### Flujo de Ejecución y Auto-Reparación:
+
+```mermaid
+flowchart TD
+    A["Usuario ejecuta 'jcode'"] --> B["Wrapper en ~/.local/bin/jcode"]
+    B --> C["Limpiar LD_PRELOAD y LD_LIBRARY_PATH"]
+    C --> D["Establecer GLIBC_TUNABLES"]
+    D --> E{"¿Binario ELF solicita /lib/ld-linux?"}
+    E -- "Sí (desactualizado/crudo)" --> F["Auto-parcheo vía 'grun -c' / patchelf"]
+    F --> G["Ejecución nativa del binario"]
+    E -- "No (ya parchado)" --> G
+    G -- "Fallo de ejecución directa" --> H["Fallback a grun / ld.so"]
+    G -- "Éxito" --> I["JCode TUI / CLI activo"]
+    H --> I
+```
+
 ### Estructura de Wrapper Estandarizada (Auto-reparación):
 ```bash
 #!/data/data/com.termux/files/usr/bin/bash

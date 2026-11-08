@@ -45,9 +45,10 @@ press_enter() {
 # ── Validaciones de Entorno ──────────────────────────────────────────────────
 check_glibc() {
     if [ ! -d "/data/data/com.termux/files/usr/glibc" ]; then
-        log_warn "No se detectó el entorno glibc en Termux."
+        log_warn "No se detectó el entorno glibc en Termux ($PREFIX/glibc)."
         log_info "JCode requiere glibc para ejecutar su binario compilado nativamente."
-        log_info "Por favor, asegúrate de tener el entorno glibc configurado en Termux vía ivam3/termux-packages."
+        log_info "Puedes instalar el entorno glibc ejecutando en Termux:"
+        echo -e "  ${CYAN}pkg update && pkg install termux-glibc glibc-runner patchelf -y${RESET}\n"
     fi
 }
 
@@ -388,7 +389,7 @@ action_diagnose() {
     if [ -d "/data/data/com.termux/files/usr/glibc" ]; then
         echo -e "${GREEN}Instalado y configurado${RESET}"
     else
-        echo -e "${YELLOW}No detectado (~/usr/glibc)${RESET}"
+        echo -e "${YELLOW}No detectado ($PREFIX/glibc)${RESET}"
     fi
     
     echo -ne " ${BOLD}Comando Walkie:${RESET} "
